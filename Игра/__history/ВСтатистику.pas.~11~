@@ -1,0 +1,107 @@
+unit ВСтатистику;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TForm4 = class(TForm)
+    Edit1: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Button1: TButton;
+    procedure Edit1Change(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form4: TForm4;
+  Path:string;
+
+
+implementation
+
+{$R *.dfm}
+
+uses Игра,Результат;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure TablRecord(Memo:Tmemo; Edit1:TEdit;NumberString:integer; Way:string);
+var i,Number: integer;
+begin
+i:=0;
+if NumberString<>0  then begin
+While copy(Memo.Lines[NumberString-1],i,1)<>'.' do begin  //Находим порядковый номер прошлого игрока.
+i:=i+1;
+end;
+end;
+
+if i=0 then begin  //Если в таблице рекордов нет записей.
+  Number:=1;
+end else           //Если в таблице рекордов есть записи.
+begin
+Number:= strtoint(copy(Memo.Lines[NumberString-1],0,i-1));  //Порядковый номер прошлого игрока.
+Number:=Number+1;//Порядковый номер нового игрока.
+end;
+
+
+Form3.FinishGame.Lines.insert(NumberString, inttostr(Number)+'. '+Edit1.text+' Счет: '+Form3.Score.Caption+' Цепочка: '+Form3.LongWay.Caption);   //Добавляем строку с новым игроком.
+Path:=ExtractFileDir(Application.ExeName);
+Memo.lines.SavetoFile(path+Way);     //Сохраняем изменения.
+Memo.lines.LoadFromFile(path+Way);   //Загружаем измененную статистику.
+
+end;
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure TForm4.Button1Click(Sender: TObject);  //Занесение имя игрока в таблицу рекордов.
+var i,b,NumberString,Number: Integer; LastPosition:string;
+begin
+
+showmessage(inttostr(masrecord[1]));
+showmessage(inttostr(masrecord[2]));
+showmessage(inttostr(masrecord[3]));
+
+if masrecord[1]<>0 then begin TablRecord(Form3.FinishGame,Edit1,Form3.FinishGame.Lines.Count,'\ОчистилиПоле.txt'); end;
+if masrecord[2]<>0 then begin TablRecord(Form3.RecordResult,Edit1,masrecord[2],'\ПоОчкам.txt'); end;
+if masrecord[3]<>0 then begin TablRecord(Form3.RecordLongWay,Edit1,masrecord[3],'\СамаяДлиннаяЦепочка.txt');   end;
+
+Form1.Enabled:=true;
+Form3.Enabled:=true;
+Form4.Close;
+end;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure TForm4.Edit1Change(Sender: TObject);             //Ограничение на ввод Имени (20 символов)
+var s:string;
+begin
+if length(Edit1.text)>20 then begin
+s:=copy(Edit1.Text,0,20);
+Edit1.text:=s;
+Edit1.SelStart:=20;
+Edit1.SelLength:=0
+end;
+if length(Edit1.text)=0 then begin button1.Enabled:=false; end else begin
+  button1.Enabled:=true;
+end;
+
+end;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure TForm4.FormCreate(Sender: TObject);
+begin
+Edit1.text:='Player';
+
+
+end;
+
+end.

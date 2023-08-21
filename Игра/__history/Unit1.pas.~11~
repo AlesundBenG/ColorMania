@@ -1,0 +1,283 @@
+unit Unit1;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Menus;
+
+  type
+  mas=array [0..25,0..25] of integer;
+
+type
+  TForm1 = class(TForm)
+    Image1: TImage;
+    MainMenu1: TMainMenu;
+    N1: TMenuItem;
+    procedure FormCreate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure N1Click(Sender: TObject);
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+  pole: mas;
+  color,oldcolor:Tcolor;
+  Image1: Timage;
+  Point: integer;
+  X,Y,NumberClearX: integer;
+
+implementation
+
+{$R *.dfm}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure DrawRectangle (i,j: integer; color:TColor; Image1: Timage);          //i - это y; j - это x
+begin
+Image1.Canvas.Pen.Color := color;
+Image1.Canvas.Brush.Color:= color;
+Image1.canvas.Rectangle(30*j,30*i,30*(j+1),30*(i+1));
+end;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function CheckPlace(X,Y:integer; ColorPlace:integer; var pole: mas): boolean;
+var ColorPlaceAround: integer;
+begin
+
+if ((X<>0) and (Y<>0))or((X<>21) and (Y<>21)) then
+begin
+ColorPlaceAround:= pole[Y,X+1];
+if (ColorPlaceAround=ColorPlace) then begin pole[Y,X+1]:=0; CheckPlace(X+1,Y,ColorPlace,pole); CheckPlace:=true; end;
+ColorPlaceAround:= pole[Y,X-1];
+if (ColorPlaceAround=ColorPlace) then begin pole[Y,X-1]:=0; CheckPlace(X-1,Y,ColorPlace,pole); CheckPlace:=true; end;
+ColorPlaceAround:= pole[Y+1,X];
+if (ColorPlaceAround=ColorPlace) then begin pole[Y+1,X]:=0; CheckPlace(X,Y+1,ColorPlace,pole); CheckPlace:=true; end;
+ColorPlaceAround:= pole[Y-1,X];
+if (ColorPlaceAround=ColorPlace) then begin pole[Y-1,X]:=0; CheckPlace(X,Y-1,ColorPlace,pole); CheckPlace:=true; end;
+end;
+
+end;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function SetOldColor(k: integer):Tcolor;
+begin
+ case k of
+0: begin SetOldColor:=clWhite; end;
+1: begin SetOldColor:=clRed;   end;
+2: begin SetOldColor:=clBlue;  end;
+3: begin SetOldColor:=clGreen; end;
+end;
+end;
+
+procedure MoveMassiveRight(a,NumberClearX :integer; var pole: mas);
+var i,j: integer; color: Tcolor;
+begin
+if a<>0 then begin
+for i := a downto 1 do begin
+  for j := 0 to 20 do begin
+    pole[j,i]:=pole[j,i-1];
+  end; //Конец цикла j
+end; //Конец цикла i
+end;
+
+for j := 0 to 20 do begin
+    pole[j,NumberClearX]:=0;
+    color:=clWhite;
+    DrawRectangle (j,NumberClearX,color,Image1);
+end;
+ showmessage('2');
+end;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure MoveMassive(a,b:integer; color:TColor; var oldcolor:TColor; Image1: Timage; var pole: mas);
+var i,k,j: integer;
+begin
+  for i := a downto 1 do begin
+    pole[i,b]:=pole[i-1,b];
+    color:=SetOldColor(pole[i,b]);
+    DrawRectangle (i,b,color,Image1);
+    end; //Конец цикла
+    pole[0,b]:=0;
+    DrawRectangle (0,b,clWhite,Image1);
+end;
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure DeleteRectangle (X,Y:integer; var NumberClearX : integer; color:TColor; var oldcolor:TColor; Image1: Timage; var pole: mas);
+var ColorPlace:integer; i,j,k: integer; b: boolean;
+begin
+b:=false;
+ColorPlace:=pole[Y,X];
+if CheckPlace(X,Y,ColorPlace,pole)=true then
+begin
+ pole[Y,X]:=0;
+for I := 0 to 20 do begin
+ for j := 0 to 20 do begin
+  if pole[i,j]=0 then
+   begin
+    color:=clWhite;
+    DrawRectangle (i,j,color,Image1);
+   end; //Конец if (2)
+ end; //Конец цикла j
+end; //Конец цикла i
+
+for I := 0 to 20 do begin
+ for j := 0 to 20 do begin
+   if pole[i,j]=0 then begin
+     MoveMassive(i,j,color,oldcolor,Image1,pole);
+     end; //Конец if
+   end; //Конец цикла j
+ end; //Конец цикла i
+oldcolor:= SetOldColor(pole[Y,X]);
+
+    for i := 20 downto NumberClearX do begin
+      if pole[20,i]=0 then begin b:=true; break; end;
+    end;
+
+    if b=true then begin
+    i:=20;
+    while i<>NumberClearX do  begin
+      if pole[20,i]=0 then begin
+        MoveMassiveRight(i,NumberClearX,pole);
+         for j := 0 to 20 do begin
+         for k := 0 to i do begin
+          color:=SetOldColor(pole[j,k]);
+          DrawRectangle (j,k,color,Image1);
+         end; //Конец цикла k
+        end; //Конец цикла j
+        NumberClearX:=NumberClearX+1;
+        i:=i+1;
+      end; //Конец условия
+      i:=i-1;
+    end; //Конец цикла i
+  end;
+
+end; //Конец if (1)
+
+
+
+end;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure Place (color:Tcolor; Image1: Timage; Point: integer; X,Y: integer);
+begin
+color:=clGray;
+Image1.Canvas.Pen.Color := color;
+Image1.Canvas.Brush.Color:= color;
+Image1.canvas.Rectangle(30*X,30*Y,30*(X+1),30*(Y+1));
+end;
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+
+case Key of
+ VK_UP:     begin
+            if Y<>0 then begin
+            DrawRectangle (Y,X,oldcolor,Image1);
+            Y:=Y-1;
+            oldcolor:=SetOldColor(pole[Y,X]);
+            end;
+            end;
+
+ VK_DOWN:   begin
+            if Y<>20 then begin
+            DrawRectangle (Y,X,oldcolor,Image1);
+            Y:=Y+1;
+            oldcolor:=SetOldColor(pole[Y,X]);
+            end;
+            end;
+
+ VK_LEFT:   begin
+            if X<>0 then begin
+            DrawRectangle (Y,X,oldcolor,Image1);
+            X:=X-1;
+            oldcolor:=SetOldColor(pole[Y,X]);
+            end;
+            end;
+
+ VK_RIGHT:  begin
+            if X<>20 then begin
+            DrawRectangle (Y,X,oldcolor,Image1);
+            X:=X+1;
+            oldcolor:=SetOldColor(pole[Y,X]);
+            end;
+            end;
+
+ VK_RETURN: begin
+            if pole[Y,X]<>0 then   begin
+            DeleteRectangle (X,Y,NumberClearX,color,oldcolor,Image1,pole);
+            end;
+            end;
+
+
+           end;
+
+Place(color,image1,Point,X,Y);
+end;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure TForm1.FormCreate(Sender: TObject);
+var i,j,k: integer;
+begin
+
+X:=0;
+Y:=0;
+NumberClearX:=0;
+for I := 0 to 20 do begin
+for j := 0 to 20 do begin
+
+k:=random(3)+1;
+case k of
+1: begin color:=clRed;   pole[i,j]:=1 end;
+2: begin color:=clBlue;  pole[i,j]:=2 end;
+3: begin color:=clGreen; pole[i,j]:=3 end;
+end;
+DrawRectangle (i,j,color,Image1);
+end; //Конец цикла j
+end; //Конец цикла i
+
+oldcolor:=SetOldColor(pole[Y,X]);
+
+Place(color,image1,Point,X,Y);
+
+end;
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+procedure TForm1.N1Click(Sender: TObject);
+var i,j,k: integer;
+begin
+
+X:=0;
+Y:=0;
+NumberClearX:=0;
+for I := 0 to 20 do begin
+for j := 0 to 20 do begin
+
+k:=random(3)+1;
+case k of
+1: begin color:=clRed;   pole[i,j]:=1 end;
+2: begin color:=clBlue;  pole[i,j]:=2 end;
+3: begin color:=clGreen; pole[i,j]:=3 end;
+end;
+DrawRectangle (i,j,color,Image1);
+end; //Конец цикла j
+end; //Конец цикла i
+
+oldcolor:=SetOldColor(pole[Y,X]);
+
+Place(color,image1,Point,X,Y);
+end;
+
+end.
+

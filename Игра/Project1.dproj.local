@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.282,C:\Users\Паша\Desktop\Игра\Game.dfm=C:\Users\Паша\Desktop\Игра\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.394,C:\Users\Паша\Desktop\Игра\Game.dfm=C:\Users\Паша\Desktop\Игра\Игра.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.281,C:\Users\Паша\Desktop\Игра\Game.pas=C:\Users\Паша\Desktop\Игра\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.394,C:\Users\Паша\Desktop\Игра\Game.pas=C:\Users\Паша\Desktop\Игра\Игра.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.601,C:\Users\Паша\Desktop\Игра\Unit1.dfm=C:\Users\Паша\Documents\RAD Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.938,C:\Users\Паша\Desktop\Игра\Справка.pas=C:\Users\Паша\Desktop\Игра\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.568,=C:\Users\Паша\Desktop\Игра\Unit4.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.245,=C:\Users\Паша\Desktop\Игра\Unit3.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.431,C:\Users\Паша\Desktop\Игра\Unit3.pas=C:\Users\Паша\Desktop\Игра\Результат.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.557,C:\Users\Паша\Desktop\Игра\ВСтатистику.dfm=C:\Users\Паша\Desktop\Игра\Unit4.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.411,=C:\Users\Паша\Desktop\Игра\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.938,C:\Users\Паша\Desktop\Игра\Справка.dfm=C:\Users\Паша\Desktop\Игра\Unit2.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.431,C:\Users\Паша\Desktop\Игра\Unit3.dfm=C:\Users\Паша\Desktop\Игра\Результат.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.217,=C:\Users\Паша\Desktop\Игра\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.557,C:\Users\Паша\Desktop\Игра\ВСтатистику.pas=C:\Users\Паша\Desktop\Игра\Unit4.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.060,=C:\Users\Паша\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.392,C:\Users\Паша\Desktop\Игра\Project1.dproj=C:\Users\Паша\Documents\RAD Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.601,C:\Users\Паша\Desktop\Игра\Unit1.pas=C:\Users\Паша\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
+  </Transactions>
+</BorlandProject>
